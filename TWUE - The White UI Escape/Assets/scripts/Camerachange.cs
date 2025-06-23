@@ -1,45 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using DG.Tweening; // DOTweenの名前空間
 
 public class Camerachange : MonoBehaviour
 {
-    [SerializeField] private Camera mainCamera;  // 左側のカメラ
-    [SerializeField] private Camera subCamera;   // 右側のカメラ
-    [SerializeField] private Image infoImage;//アドバイスメッセージの画像
-    [SerializeField] private float switchX = 5f; // カメラを切り替えるX座標（適宜調整）
-    [SerializeField] private float Display_Time = 3.0f;//アドバイスメッセージの表示時間
-    [SerializeField] private GameObject _Player;//プレイヤーオブジェクト
-    private bool AdviceMessage = true;//アドバイスメッセージを表示するかどうか
-    private bool isMainCameraActive = true;
+    [SerializeField] private Camera mainCamera;      // メインカメラ
+    [SerializeField] private float switchX = 5f;      // カメラの移動距離
+    [SerializeField] private GameObject RightWall;    // 右の壁
+    [SerializeField] private GameObject LeftWall;     // 左の壁
+    [SerializeField] private GameObject _Player;      // プレイヤー
+
+    private bool _isMoving = false; // カメラが移動中かどうかを判断するフラグ
 
     void Update()
     {
-        // プレイヤーのX座標を監視
-        if (_Player.transform.position.x >= switchX && isMainCameraActive)
+        if (_isMoving) return;
+
+        // プレイヤーが右の壁より右に移動したら
+        if (_Player.transform.position.x >= RightWall.transform.position.x)
         {
-            SwitchCamera(subCamera, mainCamera);
-            isMainCameraActive = false;
-            
+            Debug.Log("右の壁に到達");
+            MoveCamera(mainCamera.transform.position.x + switchX);
         }
-        else if (_Player.transform.position.x < switchX && !isMainCameraActive)
+        // プレイヤーが左の壁より左に移動したら
+        else if (_Player.transform.position.x < LeftWall.transform.position.x)
         {
-            SwitchCamera(mainCamera, subCamera);
-            isMainCameraActive = true;
+            Debug.Log("左の壁に到達");
+            MoveCamera(mainCamera.transform.position.x - switchX);
         }
     }
 
-    void SwitchCamera(Camera activate, Camera deactivate)
+    void MoveCamera(float targetX)
     {
-        activate.enabled = true;
-        deactivate.enabled = false;
+        _isMoving = true;
 
-            if(AdviceMessage == true)
-            {
-                AdviceMessage = false;
-            }
+        // カメラの目標位置
+        Vector3 targetPos = new Vector3(targetX, mainCamera.transform.position.y, mainCamera.transform.position.z);
+
+        // DOTweenを使って0.5秒かけてカメラを移動
+        mainCamera.transform.DOMove(targetPos, 0.5f).SetEase(Ease.InOutSine).OnComplete(() => _isMoving = false); // 移動が終わったらフラグ解除
     }
 }
-
-
