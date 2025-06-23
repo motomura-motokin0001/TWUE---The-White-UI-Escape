@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
 
 void OnCollisionEnter2D(Collision2D collision)
 {
-    Debug.Log($"名前: {collision.gameObject.name}");
+    Debug.Log($"名前: {collision.gameObject.name} タグ: {collision.gameObject.tag}");
     if (collision.gameObject.CompareTag("Ground"))
     {
         isGrounded = true;
