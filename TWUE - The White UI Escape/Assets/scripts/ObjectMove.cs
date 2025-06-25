@@ -1,12 +1,11 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using DG.Tweening;
 
 public class ObjectMove : MonoBehaviour
 {
     [SerializeField] private Transform targetObject; // 動かすオブジェクト
-    [SerializeField] private Vector2 StartPosition; // スタート位置
-    [SerializeField] private Vector2 EndPosition; //  エンド位置
+    [SerializeField] private Vector3 StartPosition; // スタート位置
+    [SerializeField] private Vector3 EndPosition; //  エンド位置
 
     public void OnPointerDown()
     {
